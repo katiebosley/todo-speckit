@@ -48,3 +48,20 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | Empty lists view copy: **"No lists yet. Create your first list."** | `Dashboard.vue` | Feature 2 |
 | MenuBar shows signed-in name and **Sign out**; hidden on login/register | `App.vue` + `MenuBar.vue` | Feature 2 |
 | Home/dashboard is a single lists view (no sidebar split) | `Dashboard.vue` | Feature 2 |
+
+## Todos
+
+| Rule | Enforcement | Introduced |
+|------|-------------|------------|
+| Todo `userId` and `listId` come from the session and owned parent list | Todo create controller | Feature 3 |
+| Parent list must belong to the caller before todo read/create | `getAccessibleListOrNull` | Feature 3 |
+| Todo reads/updates/deletes scope with `userId: req.user.id` | `getAccessibleTodoOrNull` + `findAllByList` | Feature 3 |
+| Cross-user todo or parent-list access → **`404`**, never `403` | Todo controllers | Feature 3 |
+| Todo titles trimmed; empty/whitespace rejected | Controller + Dashboard form rules | Feature 3 |
+| Todo title max **255** characters | Controller `400` + client rules | Feature 3 |
+| New todos default to `completed: false` | Todo create | Feature 3 |
+| Todos ordered incomplete first, then `createdAt` ascending | `findAllByList` + Dashboard `sortTodos` | Feature 3 |
+| Deleting a list removes its todos | List `hasMany` Todo `onDelete: CASCADE` | Feature 3 |
+| Empty items dialog copy: **"No todos in this list yet."** | `Dashboard.vue` | Feature 3 |
+| **+ Add Item** is only inside the list-items dialog | `Dashboard.vue` | Feature 3 |
+| Completed todos use struck-through / muted title | `Dashboard.vue` | Feature 3 |

@@ -1,6 +1,6 @@
 # API Reference
 
-**Status:** Features 1–2.
+**Status:** Features 1–3.
 
 API mount path: `/todo` (`backend/server.js`). Authenticated routes require `Authorization: Bearer <token>`.
 
@@ -15,6 +15,10 @@ API mount path: `/todo` (`backend/server.js`). Authenticated routes require `Aut
 | `POST` | `/todo/lists` | Yes | Create a list owned by the authenticated user |
 | `PUT` | `/todo/lists/:listId` | Yes | Rename an owned list |
 | `DELETE` | `/todo/lists/:listId` | Yes | Delete an owned list |
+| `GET` | `/todo/lists/:listId/todos` | Yes | Fetch todos in an owned list |
+| `POST` | `/todo/lists/:listId/todos` | Yes | Add a todo to an owned list |
+| `PUT` | `/todo/todos/:id` | Yes | Update an owned todo (title and/or `completed`) |
+| `DELETE` | `/todo/todos/:id` | Yes | Delete an owned todo |
 
 **Login / register success** (`201` register, `200` login) — flat JSON, no envelope:
 
@@ -47,7 +51,23 @@ Password hashes are never included.
 ```
 
 **Errors:** `{ "message": "Human-readable explanation." }` with `400`, `401`, `404`, or `500`.  
-**Not found / not owned:** `404` `{ "message": "List with id=<id> not found." }` (never `403`).
+**Not found / not owned:** `404` `{ "message": "List with id=<id> not found." }` or `{ "message": "Todo with id=<id> not found." }` (never `403`).
+
+**Create todo request:** `{ "title": "Buy milk" }` (`userId` in the body is ignored).
+
+**Todo success** (`200` / `201`):
+
+```json
+{
+  "id": 10,
+  "listId": 1,
+  "title": "Buy milk",
+  "completed": false,
+  "userId": 42,
+  "createdAt": "2026-07-02T12:05:00.000Z",
+  "updatedAt": "2026-07-02T12:05:00.000Z"
+}
+```
 
 ## Conventions
 
@@ -61,3 +81,4 @@ Password hashes are never included.
 |------|------------|
 | Auth register / login / logout | Feature 1 |
 | List CRUD (`GET/POST/PUT/DELETE /todo/lists`) | Feature 2 |
+| Todo CRUD (`GET/POST /todo/lists/:listId/todos`, `PUT/DELETE /todo/todos/:id`) | Feature 3 |

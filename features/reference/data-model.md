@@ -1,6 +1,6 @@
 # Data Model Reference
 
-**Status:** Features 1–2.
+**Status:** Features 1–3.
 
 ## Tables
 
@@ -36,12 +36,28 @@
 | `createdAt` | DATE | Sequelize timestamps |
 | `updatedAt` | DATE | Sequelize timestamps |
 
+### `todos`
+
+| Field | Type | Rules |
+|-------|------|-------|
+| `id` | INTEGER PK | Auto-increment |
+| `listId` | INTEGER FK | Required; references `lists.id`; cascade on list delete |
+| `title` | STRING(255) | Required; trimmed; max 255 chars |
+| `completed` | BOOLEAN | Default `false` |
+| `userId` | INTEGER FK | Required; references `users.id`; set from `req.user.id` on create |
+| `createdAt` | DATE | Sequelize timestamps |
+| `updatedAt` | DATE | Sequelize timestamps |
+
 ## Associations
 
 - User hasMany Session (`userId`, cascade delete)
 - Session belongsTo User (`userId`)
 - User hasMany List (`userId`, cascade delete)
 - List belongsTo User (`userId`)
+- List hasMany Todo (`listId`, cascade delete)
+- Todo belongsTo List (`listId`)
+- User hasMany Todo (`userId`, cascade delete)
+- Todo belongsTo User (`userId`)
 
 ## Feature provenance
 
@@ -49,3 +65,4 @@
 |------|------------|
 | `users`, `sessions` | Feature 1 |
 | `lists` | Feature 2 |
+| `todos` | Feature 3 |
