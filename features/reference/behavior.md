@@ -26,12 +26,25 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | Duplicate username → `400` `"Username is already taken."` | Register controller | Feature 1 |
 | Duplicate email → `400` `"Email is already registered."` | Register controller | Feature 1 |
 | Invalid credentials → `401` `"Invalid username or password."` (same message either field) | Login controller | Feature 1 |
-| Protected `GET /todo/lists` returns only the caller's lists (none until Feature 2) | `authenticate` + empty list response | Feature 1 |
+| Protected `GET /todo/lists` returns only the caller's lists | `authenticate` + `userId: req.user.id` | Features 1–2 |
 
 ## UI rules
 
 | Rule | Enforcement | Introduced |
 |------|-------------|------------|
-| Login, register, and Feature 1 home use full-screen layout (no MenuBar) | `App.vue` | Feature 1 |
-| Home shows a welcome using the user's first name and a **Sign out** button | `Home.vue` | Feature 1 |
+| Login and register use full-screen layout (no MenuBar) | `App.vue` `showMenuBar` | Features 1–2 |
 | Auth errors use `<v-alert type="error">` | Login / Register views | Feature 1 |
+
+## Lists
+
+| Rule | Enforcement | Introduced |
+|------|-------------|------------|
+| List `userId` is always `req.user.id` on create; body `userId` is ignored | List create controller | Feature 2 |
+| Reads/updates/deletes scope with `userId: req.user.id` | `getAccessibleListOrNull` + `findAll` | Feature 2 |
+| Cross-user list access → **`404`**, never `403` | List update/delete | Feature 2 |
+| List names trimmed; empty/whitespace rejected | Controller + Dashboard form rules | Feature 2 |
+| List name max **100** characters | Controller `400` + client rules | Feature 2 |
+| Lists returned **alphabetically by name** | `findAll` `order: name ASC` | Feature 2 |
+| Empty lists view copy: **"No lists yet. Create your first list."** | `Dashboard.vue` | Feature 2 |
+| MenuBar shows signed-in name and **Sign out**; hidden on login/register | `App.vue` + `MenuBar.vue` | Feature 2 |
+| Home/dashboard is a single lists view (no sidebar split) | `Dashboard.vue` | Feature 2 |

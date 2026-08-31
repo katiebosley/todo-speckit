@@ -1,11 +1,12 @@
 import { Router } from "express";
+import listController from "../controllers/list.controller.js";
 import { authenticate } from "../authorization/authorization.js";
 
 const router = Router();
 
-/** Protected read used by Feature 1 session tests. List CRUD is Feature 2. */
-router.get("/", [authenticate], (_req, res) => {
-  res.send([]);
-});
+router.get("/", [authenticate], listController.findAll);
+router.post("/", [authenticate], listController.create);
+router.put("/:listId", [authenticate], listController.update);
+router.delete("/:listId", [authenticate], listController.remove);
 
 export default router;
