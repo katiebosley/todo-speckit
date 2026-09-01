@@ -25,6 +25,12 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | Registration email uses shared `emailRules` (required + format) | `frontend/src/config/validation.js` | Feature 1 |
 | Duplicate username → `400` `"Username is already taken."` | Register controller | Feature 1 |
 | Duplicate email → `400` `"Email is already registered."` | Register controller | Feature 1 |
+| Duplicate username / email on **profile update** | User update controller | Feature 4 |
+| Profile `GET/PUT /todo/users/:id` succeeds only when `:id = req.user.id` | `getAccessibleUserOrNull` | Feature 4 |
+| Cross-user profile access → **`404`**, never `403` | User controllers | Feature 4 |
+| Profile password optional on `PUT`; when set, min 8 chars and bcrypt hash | User update controller | Feature 4 |
+| Profile responses never include the password hash | User `defaultScope` | Feature 4 |
+| After profile save, client refreshes `localStorage` `user` and dispatches `user-logged-in` | `MenuBar.vue` | Feature 4 |
 | Invalid credentials → `401` `"Invalid username or password."` (same message either field) | Login controller | Feature 1 |
 | Protected `GET /todo/lists` returns only the caller's lists | `authenticate` + `userId: req.user.id` | Features 1–2 |
 
@@ -46,7 +52,9 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | List name max **100** characters | Controller `400` + client rules | Feature 2 |
 | Lists returned **alphabetically by name** | `findAll` `order: name ASC` | Feature 2 |
 | Empty lists view copy: **"No lists yet. Create your first list."** | `Dashboard.vue` | Feature 2 |
-| MenuBar shows signed-in name and **Sign out**; hidden on login/register | `App.vue` + `MenuBar.vue` | Feature 2 |
+| MenuBar is hidden on login/register | `App.vue` `showMenuBar` | Feature 2 |
+| MenuBar uses a user icon + profile dropdown (name, username, email); **Log out** lives in the dropdown; no standalone **Sign out** | `MenuBar.vue` | Feature 4 |
+| Edit Profile dialog uses shared `emailRules` | `MenuBar.vue` + `validation.js` | Feature 4 |
 | Home/dashboard is a single lists view (no sidebar split) | `Dashboard.vue` | Feature 2 |
 
 ## Todos
