@@ -18,6 +18,26 @@ export default (sequelize, Sequelize) => {
       allowNull: false,
       defaultValue: false,
     },
+    dueDate: {
+      type: Sequelize.DATEONLY,
+      allowNull: true,
+      defaultValue: null,
+      get() {
+        const value = this.getDataValue("dueDate");
+        if (!value) {
+          return null;
+        }
+
+        if (typeof value === "string") {
+          return value.slice(0, 10);
+        }
+
+        const year = value.getUTCFullYear();
+        const month = String(value.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(value.getUTCDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      },
+    },
     userId: {
       type: Sequelize.INTEGER,
       allowNull: false,

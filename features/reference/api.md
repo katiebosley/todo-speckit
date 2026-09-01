@@ -1,6 +1,6 @@
 # API Reference
 
-**Status:** Features 1–3.
+**Status:** Features 1–3 and 5.
 
 API mount path: `/todo` (`backend/server.js`). Authenticated routes require `Authorization: Bearer <token>`.
 
@@ -17,7 +17,7 @@ API mount path: `/todo` (`backend/server.js`). Authenticated routes require `Aut
 | `DELETE` | `/todo/lists/:listId` | Yes | Delete an owned list |
 | `GET` | `/todo/lists/:listId/todos` | Yes | Fetch todos in an owned list |
 | `POST` | `/todo/lists/:listId/todos` | Yes | Add a todo to an owned list |
-| `PUT` | `/todo/todos/:id` | Yes | Update an owned todo (title and/or `completed`) |
+| `PUT` | `/todo/todos/:id` | Yes | Update an owned todo (title, `completed`, and/or `dueDate`) |
 | `DELETE` | `/todo/todos/:id` | Yes | Delete an owned todo |
 
 **Login / register success** (`201` register, `200` login) — flat JSON, no envelope:
@@ -53,7 +53,7 @@ Password hashes are never included.
 **Errors:** `{ "message": "Human-readable explanation." }` with `400`, `401`, `404`, or `500`.  
 **Not found / not owned:** `404` `{ "message": "List with id=<id> not found." }` or `{ "message": "Todo with id=<id> not found." }` (never `403`).
 
-**Create todo request:** `{ "title": "Buy milk" }` (`userId` in the body is ignored).
+**Create todo request:** `{ "title": "Buy milk", "dueDate": "2026-07-15" }` (`dueDate` optional; omit or `null` for none; `userId` in the body is ignored).
 
 **Todo success** (`200` / `201`):
 
@@ -63,11 +63,14 @@ Password hashes are never included.
   "listId": 1,
   "title": "Buy milk",
   "completed": false,
+  "dueDate": "2026-07-15",
   "userId": 42,
   "createdAt": "2026-07-02T12:05:00.000Z",
   "updatedAt": "2026-07-02T12:05:00.000Z"
 }
 ```
+
+`dueDate` is `null` when not set. Invalid `dueDate` → `400` `{ "message": "Due date must be a valid date in YYYY-MM-DD format." }`. `PUT` with `dueDate: null` clears the date; omitting `dueDate` leaves it unchanged.
 
 ## Conventions
 
@@ -82,3 +85,4 @@ Password hashes are never included.
 | Auth register / login / logout | Feature 1 |
 | List CRUD (`GET/POST/PUT/DELETE /todo/lists`) | Feature 2 |
 | Todo CRUD (`GET/POST /todo/lists/:listId/todos`, `PUT/DELETE /todo/todos/:id`) | Feature 3 |
+| Todo optional `dueDate` (DATEONLY `YYYY-MM-DD`) | Feature 5 |
