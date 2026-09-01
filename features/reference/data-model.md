@@ -1,6 +1,6 @@
 # Data Model Reference
 
-**Status:** Features 1–2.
+**Status:** Features 1–2 and 4.
 
 ## Tables
 
@@ -9,12 +9,12 @@
 | Field | Type | Rules |
 |-------|------|-------|
 | `id` | INTEGER PK | Auto-increment |
-| `fName` | STRING | Required |
-| `lName` | STRING | Required |
-| `email` | STRING | Required, unique |
-| `username` | STRING(100) | Required, unique; stored lowercase |
-| `password` | STRING(255) | Required; bcrypt hash only; excluded from default scope |
-| `role` | STRING(20) | Default `worker` |
+| `fName` | STRING | Required; editable via `PUT /todo/users/:id` (Feature 4) |
+| `lName` | STRING | Required; editable via `PUT /todo/users/:id` (Feature 4) |
+| `email` | STRING | Required, unique; editable via profile update (Feature 4) |
+| `username` | STRING(100) | Required, unique; stored lowercase; editable via profile update (Feature 4) |
+| `password` | STRING(255) | Required; bcrypt hash only; excluded from default scope; optional on profile `PUT` |
+| `role` | STRING(20) | Default `worker`; read-only in profile API |
 
 ### `sessions`
 
@@ -49,3 +49,4 @@
 |------|------------|
 | `users`, `sessions` | Feature 1 |
 | `lists` | Feature 2 |
+| Profile updates to `users` (no new tables) | Feature 4 |
