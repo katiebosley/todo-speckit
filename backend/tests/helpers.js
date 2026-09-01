@@ -1,63 +1,12 @@
-import mysql from "mysql2/promise";
-import request from "supertest";
-import app from "../server.js";
 import db from "../app/models/index.js";
-import dbConfig from "../app/config/db.config.js";
 
-const ensureTestDatabase = async () => {
-  const connection = await mysql.createConnection({
-    host: dbConfig.HOST,
-    user: dbConfig.USER,
-    password: dbConfig.PASSWORD,
-  });
-  await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbConfig.DB}\``);
-  await connection.end();
-};
-
+/** Sync schema for tests (no models registered in the starter shell). */
 export const syncTestDatabase = async () => {
-  await ensureTestDatabase();
-  await db.sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
-  await db.sequelize.query("DROP TABLE IF EXISTS todos");
-  await db.sequelize.query("DROP TABLE IF EXISTS lists");
   await db.sequelize.sync({ force: true });
-  await db.sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
 };
 
-export const resetTestDatabase = async () => {
-  if (db.todo) {
-    await db.todo.destroy({ where: {} });
-  }
-  if (db.list) {
-    await db.list.destroy({ where: {} });
-  }
-  await db.session.destroy({ where: {} });
-  await db.user.destroy({ where: {} });
-};
-
-export const registerUser = async (overrides = {}) => {
-  const payload = {
-    fName: "Test",
-    lName: "User",
-    email: "test@example.com",
-    username: "testuser",
-    password: "password123",
-    ...overrides,
-  };
-
-  const response = await request(app).post("/todo/register").send(payload);
-
-  return {
-    response,
-    user: response.body,
-    token: response.body.token,
-    authHeader: { Authorization: `Bearer ${response.body.token}` },
-  };
-};
-
-export const createList = async (authHeader, name) => {
-  return request(app).post("/todo/lists").set(authHeader).send({ name });
-};
-
-export const createTodo = async (authHeader, listId, title) => {
-  return request(app).post(`/todo/lists/${listId}/todos`).set(authHeader).send({ title });
-};
+/**
+ * Add feature-specific helpers here as you implement auth/lists/etc.
+ * Example after Feature 1:
+ *   export const registerUser = async (overrides = {}) => { … }
+ */

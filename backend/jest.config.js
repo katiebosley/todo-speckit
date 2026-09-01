@@ -6,6 +6,5 @@ export default {
   setupFiles: ["./tests/setup.js"],
   modulePathIgnorePatterns: ["<rootDir>/deploy/"],
   maxWorkers: 1,
-  forceExit: true,
   verbose: true,
 };
