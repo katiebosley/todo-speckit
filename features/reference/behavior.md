@@ -73,3 +73,9 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | Empty items dialog copy: **"No todos in this list yet."** | `Dashboard.vue` | Feature 3 |
 | **+ Add Item** is only inside the list-items dialog | `Dashboard.vue` | Feature 3 |
 | Completed todos use struck-through / muted title | `Dashboard.vue` | Feature 3 |
+| Todo `dueDate` is optional; `null` means none | Todo create/update | Feature 5 |
+| `dueDate` is calendar-only `YYYY-MM-DD` (`DATEONLY`) | Todo model + controller | Feature 5 |
+| Invalid `dueDate` → `400` `"Due date must be a valid date in YYYY-MM-DD format."` | Todo create/update | Feature 5 |
+| `PUT` `dueDate: null` clears; omitting `dueDate` leaves it unchanged | Todo update | Feature 5 |
+| Incomplete todos with `dueDate` before local today use overdue (`text-error`) styling | `isTodoOverdue` + Dashboard row | Feature 5 |
+| Completed todos never use overdue styling | `isTodoOverdue` | Feature 5 |
